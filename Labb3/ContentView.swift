@@ -21,6 +21,15 @@ struct ContentView: View {
     @State private var isFinished = false
     @State private var isLoading = false
 
+    func fetchQuestions() async {
+        isLoading = true
+        let url = URL(string: "https://opentdb.com/api.php?amount=10&type=multiple")!
+        let (data, _) = try! await URLSession.shared.data(from: url)
+        let decoded = try! JSONDecoder().decode(TriviaResponse.self, from: data)
+        questions = decoded.results
+        isLoading = false
+    }
+
     var body: some View {
         Text("Pop Quiz")
             .font(.largeTitle)
