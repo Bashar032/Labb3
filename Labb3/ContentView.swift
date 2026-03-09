@@ -30,9 +30,34 @@ struct ContentView: View {
         isLoading = false
     }
 
+    func answerTapped(_ answer: String) {
+        if answer == questions[currentIndex].correct_answer {
+            score += 1
+        }
+        if currentIndex + 1 < questions.count {
+            currentIndex += 1
+        } else {
+            isFinished = true
+        }
+    }
+
     var body: some View {
-        Text("Pop Quiz")
-            .font(.largeTitle)
+        if isLoading {
+            ProgressView("Loading questions...")
+        } else if questions.isEmpty {
+            VStack(spacing: 20) {
+                Text("Pop Quiz 🧠")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                Button("Start Quiz") {
+                    Task { await fetchQuestions() }
+                }
+                .padding()
+                .background(Color.purple)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+            }
+        }
     }
 }
 
